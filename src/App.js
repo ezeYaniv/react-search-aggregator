@@ -1,16 +1,13 @@
-import React, {useState} from 'react';
-import Search from './Search';
-import Searchbar from './components/Searchbar';
-import CheckboxList from './components/CheckboxList';
+import React, { useState } from 'react';
+import Form from './components/Form';
 
 const App = () => {
-
 	// Variable declarations
-    const searchEnginesArray = ['Google', 'Wikipedia', 'YouTube'];
+	const searchEnginesArray = ['Google', 'Wikipedia', 'YouTube'];
 
-    // State declarations
-    const [term, setTerm] = useState('');
-    const [searchEngines, setSearchEngines] = useState(
+	// State declarations
+	const [term, setTerm] = useState('');
+	const [searchEngines, setSearchEngines] = useState(
 		searchEnginesArray.reduce((searchEnginesArray, option) => {
 			return {
 				...searchEnginesArray,
@@ -19,10 +16,11 @@ const App = () => {
 		}, {})
 	);
 
-    console.log(searchEngines);
-    // Event handlers
+	// Event handlers
 
-    const handleCheckboxChange = (e) => {
+	const handleTermChange = (e) => setTerm(e.target.value);
+
+	const handleCheckboxChange = (e) => {
 		const option = e.target.value;
 		setSearchEngines((prevEngines) => {
 			return {
@@ -32,18 +30,22 @@ const App = () => {
 		});
 	};
 
-    const handleTermChange = (e) => {
-        setTerm(e.target.value);
-    }
+	const handleFormSubmit = (e) => {
+		e.preventDefault();
+        
+	};
 
-
-    // JSX rendering
+	// JSX rendering
 	return (
-		<div>
-			{/* <Search searchOptions={searchOptions} /> */}
-            <Searchbar handleTermChange={handleTermChange} term={term} />
-            <CheckboxList searchEngines={searchEngines} handleCheckboxChange={handleCheckboxChange} />
-		</div>
+		<React.Fragment>
+			<Form
+				term={term}
+				searchEngines={searchEngines}
+				handleTermChange={handleTermChange}
+				handleCheckboxChange={handleCheckboxChange}
+				handleFormSubmit={handleFormSubmit}
+			/>
+		</React.Fragment>
 	);
 };
 

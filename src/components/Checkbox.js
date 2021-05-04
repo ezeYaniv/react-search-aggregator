@@ -1,9 +1,9 @@
 import React from 'react';
 
-const Checkbox = ( {option, handleCheckboxChange, isChecked}) => {
-    return (
+const Checkbox = ({ option, handleCheckboxChange, isChecked }) => {
+	return (
 		<div>
-			<label className="icon">
+			<label>
 				<input
 					checked={isChecked}
 					type="checkbox"

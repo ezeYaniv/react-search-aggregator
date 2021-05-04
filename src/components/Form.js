@@ -1,16 +1,25 @@
 import React from 'react';
+import Searchbar from './Searchbar';
+import CheckboxList from './CheckboxList';
 
-const Form = () => {
+const Form = ({
+	term,
+	searchEngines,
+	handleTermChange,
+	handleCheckboxChange,
+	handleFormSubmit,
+}) => {
 	return (
-		<div>
-			<form onSubmit={handleFormSubmit} className="ui form">
-				<Searchbar />
-				<Checkboxes />
-				<button type="submit" className="ui button">
-					Search!
-				</button>
-			</form>
-		</div>
+		<form onSubmit={handleFormSubmit} className="ui form">
+			<Searchbar term={term} handleTermChange={handleTermChange} />
+			<CheckboxList
+				searchEngines={searchEngines}
+				handleCheckboxChange={handleCheckboxChange}
+			/>
+			<button type="submit" className="ui button">
+				Search!
+			</button>
+		</form>
 	);
 };
 
