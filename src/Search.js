@@ -9,6 +9,7 @@ const Search = ({ searchOptions }) => {
 			};
 		}, {})
 	);
+
     const [term, setTerm] = useState('');
 
 	const handleFormSubmit = (e) => {
