@@ -1,12 +1,21 @@
 import React, { useState } from 'react';
-import youtube from './api/youtube';
 import Form from './components/Form';
 import ResultList from './components/ResultList';
-import axios from 'axios';
+
+import youtubeSearch from './api/youtube';
+import wikiSearch from './api/wikipedia';
+import redditSearch from './api/reddit';
+
+require('dotenv').config();
 
 const App = () => {
 	// Variable declarations
-	const searchEnginesArray = ['Google', 'Wikipedia', 'YouTube'];
+	const searchEnginesArray = ['Reddit', 'Wikipedia', 'YouTube'];
+	const searchEngineFunctions = {
+		Reddit: redditSearch,
+		Wikipedia: wikiSearch,
+		YouTube: youtubeSearch,
+	};
 
 	// State declarations
 	const [term, setTerm] = useState('');
@@ -35,48 +44,29 @@ const App = () => {
 
 	const handleFormSubmit = (e) => {
 		e.preventDefault();
+		setResults([]);
 
-		// youtube api
-		if (searchEngines['YouTube'] && term) {
-			const youtubeSearch = async () => {
-				const response = await youtube.get('search', {
-					params: { q: term },
+		// this code runs the appropriate search function (wikiSearch, youtubeSearch, etc) based on the search engine(s) selected
+		// then updates the 'results' piece of state
+		Object.entries(searchEngines).forEach(([engine, isSelected]) => {
+			if (isSelected && term) {
+				searchEngineFunctions[engine](term).then((result) => {
+					setResults((prevResults) => {
+						return {
+							...prevResults,
+							[engine]: result,
+						};
+					});
 				});
-
-				const youtubeResults = response.data.items.map((item) => item.snippet);
-				youtubeResults.forEach((item) => console.log(item.title));
-				// const [title, description] = youtubeResults;
-				// const resultDefault = {engine: 'YouTube', title: title}
-				console.log(youtubeResults);
-				// console.log(resultDefault);
-			};
-			youtubeSearch();
-		}
-
-		//wikipedia api
-		if (searchEngines['Wikipedia'] && term) {
-			const wikiSearch = async () => {
-				const { data } = await axios.get('https://en.wikipedia.org/w/api.php', {
-					params: {
-						action: 'query',
-						format: 'json',
-						list: 'search',
-						origin: '*',
-						srsearch: term,
-					},
-				});
-
-				// if (data.query) {
-					console.log(data.query.search);
-				// }
-			};
-			wikiSearch();
-		}
+			}
+		});
 	};
 
 	// JSX rendering
 	return (
-		<div>
+		<div className="content-container">
+			<h1>Search Engine Aggregator</h1>
+
 			<Form
 				term={term}
 				searchEngines={searchEngines}
