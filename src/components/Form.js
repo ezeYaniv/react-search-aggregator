@@ -16,9 +16,9 @@ const Form = ({
 				searchEngines={searchEngines}
 				handleCheckboxChange={handleCheckboxChange}
 			/>
-			<button type="submit" className="ui button">
+			{/* <button type="submit" className="ui button">
 				Search!
-			</button>
+			</button> */}
 		</form>
 	);
 };

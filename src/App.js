@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Form from './components/Form';
 import ResultList from './components/ResultList';
 
@@ -44,23 +44,30 @@ const App = () => {
 
 	const handleFormSubmit = (e) => {
 		e.preventDefault();
-		setResults([]);
-
-		// this code runs the appropriate search function (wikiSearch, youtubeSearch, etc) based on the search engine(s) selected
-		// then updates the 'results' piece of state
-		Object.entries(searchEngines).forEach(([engine, isSelected]) => {
-			if (isSelected && term) {
-				searchEngineFunctions[engine](term).then((result) => {
-					setResults((prevResults) => {
-						return {
-							...prevResults,
-							[engine]: result,
-						};
-					});
-				});
-			}
-		});
 	};
+
+	// This automatically searches if no activity happens after 1 second (either typing a term or clicking a checkbox)
+	useEffect(() => {
+		setResults([]);
+		const search = () => {
+			Object.entries(searchEngines).forEach(([engine, isSelected]) => {
+				if (isSelected && term) {
+					searchEngineFunctions[engine](term).then((result) => {
+						setResults((prevResults) => {
+							return {
+								...prevResults,
+								[engine]: result,
+							};
+						});
+					});
+				}
+			});
+		};
+		if (term) {
+			const timer = setTimeout(() => search(), 1000);
+			return () => clearTimeout(timer);
+		}
+	}, [term, searchEngines]);
 
 	// JSX rendering
 	return (
@@ -81,3 +88,22 @@ const App = () => {
 };
 
 export default App;
+
+// *** NOTE: This code allows you to search upon Form submit - commented out because we are using the automatic search function ***
+// *** This should be put into the event handler 'handleFormSubmit' and a Search button should be added to the <Form /> component
+
+// 	setResults([]);
+// 	// this code runs the appropriate search function (wikiSearch, youtubeSearch, etc) based on the search engine(s) selected
+// 	// then updates the 'results' piece of state
+// 	Object.entries(searchEngines).forEach(([engine, isSelected]) => {
+// 		if (isSelected && term) {
+// 			searchEngineFunctions[engine](term).then((result) => {
+// 				setResults((prevResults) => {
+// 					return {
+// 						...prevResults,
+// 						[engine]: result,
+// 					};
+// 				});
+// 			});
+// 		}
+// 	});
