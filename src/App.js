@@ -11,11 +11,7 @@ require('dotenv').config();
 const App = () => {
 	// Variable declarations
 	const searchEnginesArray = ['Reddit', 'Wikipedia', 'YouTube'];
-	const searchEngineFunctions = {
-		Reddit: redditSearch,
-		Wikipedia: wikiSearch,
-		YouTube: youtubeSearch,
-	};
+	
 
 	// State declarations
 	const [term, setTerm] = useState('');
@@ -48,6 +44,12 @@ const App = () => {
 
 	// This automatically searches if no activity happens after 1 second (either typing a term or clicking a checkbox)
 	useEffect(() => {
+		const searchEngineFunctions = {
+			Reddit: redditSearch,
+			Wikipedia: wikiSearch,
+			YouTube: youtubeSearch,
+		};
+		
 		setResults([]);
 		const search = () => {
 			Object.entries(searchEngines).forEach(([engine, isSelected]) => {
