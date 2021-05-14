@@ -8,25 +8,25 @@ import redditSearch from './api/reddit';
 
 require('dotenv').config();
 
-const SEARCH_ENGINES_ARRAY = ['Reddit', 'Wikipedia', 'YouTube'];
-const INITIAL_SEARCH_ENGINES = SEARCH_ENGINES_ARRAY.reduce((searchEnginesArray, option) => {
-	return {
-		...searchEnginesArray,
-		[option]: false,
-	};
-}, {});
-
 const App = () => {
 	// Variable declarations
+	const searchEnginesArray = ['Reddit', 'Wikipedia', 'YouTube'];
 	
 
 	// State declarations
-	const [query, setQuery] = useState('');
-	const [searchEngines, setSearchEngines] = useState(INITIAL_SEARCH_ENGINES);
+	const [term, setTerm] = useState('');
+	const [searchEngines, setSearchEngines] = useState(
+		searchEnginesArray.reduce((searchEnginesArray, option) => {
+			return {
+				...searchEnginesArray,
+				[option]: false,
+			};
+		}, {})
+	);
 	const [results, setResults] = useState([]);
 
 	// Event handlers
-	const handleQueryChange = (e) => setQuery(e.target.value);
+	const handleTermChange = (e) => setTerm(e.target.value);
 
 	const handleCheckboxChange = (e) => {
 		const option = e.target.value;
@@ -53,8 +53,8 @@ const App = () => {
 		setResults([]);
 		const search = () => {
 			Object.entries(searchEngines).forEach(([engine, isSelected]) => {
-				if (isSelected && query) {
-					searchEngineFunctions[engine](query).then((result) => {
+				if (isSelected && term) {
+					searchEngineFunctions[engine](term).then((result) => {
 						setResults((prevResults) => {
 							return {
 								...prevResults,
@@ -77,9 +77,9 @@ const App = () => {
 			<h1>Search Engine Aggregator</h1>
 
 			<Form
-				query={query}
+				term={term}
 				searchEngines={searchEngines}
-				handleQueryChange={handleQueryChange}
+				handleTermChange={handleTermChange}
 				handleCheckboxChange={handleCheckboxChange}
 				handleFormSubmit={handleFormSubmit}
 			/>
@@ -98,8 +98,8 @@ export default App;
 // 	// this code runs the appropriate search function (wikiSearch, youtubeSearch, etc) based on the search engine(s) selected
 // 	// then updates the 'results' piece of state
 // 	Object.entries(searchEngines).forEach(([engine, isSelected]) => {
-// 		if (isSelected && query) {
-// 			searchEngineFunctions[engine](query).then((result) => {
+// 		if (isSelected && term) {
+// 			searchEngineFunctions[engine](term).then((result) => {
 // 				setResults((prevResults) => {
 // 					return {
 // 						...prevResults,
